@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from app.models import PlayerModel, QuestionModel, GameModel
+from app.models import Player, Question, Game
+
 def create_player(db: Session, name: str, score: int = 0):
     player = Player(name=name, score=score)
     db.add(player)

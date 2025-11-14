@@ -29,8 +29,8 @@ class QuestionCreate(QuestionBase):
 class QuestionOut(QuestionBase):
     id: int
 
-    class Config:
-        orm_mode = True
+class Config:
+    from_attributes = True
 
 # --- Game ---
 class GameCreate(BaseModel):
