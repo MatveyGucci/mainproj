@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
 
 # --- Player ---
 class PlayerBase(BaseModel):
@@ -9,46 +9,43 @@ class PlayerBase(BaseModel):
 class PlayerCreate(PlayerBase):
     pass
 
-class PlayerOut(PlayerBase):
+class PlayerRead(PlayerBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 # --- Question ---
 class QuestionBase(BaseModel):
     text: str
     options: List[str]
     correct_index: int
-    category: Optional[str] = None
-    difficulty: Optional[float] = None
+    category: str
+    difficulty: float
 
 class QuestionCreate(QuestionBase):
     pass
 
-class QuestionOut(QuestionBase):
+class QuestionRead(QuestionBase):
     id: int
 
-class Config:
-    from_attributes = True
+    class Config:
+        from_attributes = True
+
 
 # --- Game ---
-class GameCreate(BaseModel):
+class GameBase(BaseModel):
     current_turn: int = 0
     state: str = "waiting"
 
-class GameOut(BaseModel):
+class GameCreate(GameBase):
+    pass
+
+class GameRead(GameBase):
     id: int
-    players: List[PlayerOut] = []
-    current_turn: int
-    state: str
-    questions: List[QuestionOut] = []
+    players: List[PlayerRead] = []
+    questions: List[QuestionRead] = []
 
     class Config:
-        orm_mode = True
-
-class GameUpdate(BaseModel):
-    player_ids: Optional[List[int]] = None
-    question_ids: Optional[List[int]] = None
-    current_turn: Optional[int] = None
-    state: Optional[str] = None
+        from_attributes = True

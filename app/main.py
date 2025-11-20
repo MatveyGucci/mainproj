@@ -12,10 +12,8 @@ app = FastAPI()
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-# Инициализация базы
 init_db()
 
-# Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -28,15 +26,15 @@ async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 # --- Players ---
-@app.post("/players/", response_model=schemas.PlayerOut)
-async def create_player(player: schemas.PlayerCreate, db: Session = Depends(get_db)):
-    db_player = models.PlayerModel(name=player.name, score=0)
+@app.post("/players/", response_model=schemas.PlayerRead)
+def create_player(player: schemas.PlayerCreate, db: Session = Depends(get_db)):
+    db_player = models.Player(name=player.name, score=player.score)
     return crud.create_player(db, db_player)
 
-@app.get("/players/{player_id}", response_model=schemas.PlayerOut)
+@app.get("/players/{player_id}", response_model=schemas.PlayerRead)
 async def read_player(player_id: int, db: Session = Depends(get_db)):
     return crud.get_player(db, player_id)
 
-@app.get("/players/", response_model=list[schemas.PlayerOut])
+@app.get("/players/", response_model=list[schemas.PlayerRead])
 async def read_players(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     return crud.get_players(db, skip=skip, limit=limit)
