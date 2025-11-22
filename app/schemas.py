@@ -32,20 +32,4 @@ class QuestionRead(QuestionBase):
 
     class Config:
         from_attributes = True
-
-
-# --- Game ---
-class GameBase(BaseModel):
-    current_turn: int = 0
-    state: str = "waiting"
-
-class GameCreate(GameBase):
-    pass
-
-class GameRead(GameBase):
-    id: int
-    players: List[PlayerRead] = []
-    questions: List[QuestionRead] = []
-
-    class Config:
-        from_attributes = True
+        

@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Float, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from .database import Base
+from sqlalchemy.dialects.sqlite import JSON
 
 class Player(Base):
     __tablename__ = "players"
@@ -9,30 +10,14 @@ class Player(Base):
     name = Column(String, index=True)
     score = Column(Integer, default=0)
 
-    game_id = Column(Integer, ForeignKey("games.id"))
-    game = relationship("Game", back_populates="players")
-
 
 class Question(Base):
     __tablename__ = "questions"
 
     id = Column(Integer, primary_key=True, index=True)
     text = Column(String, nullable=False)
-    category = Column(String)
-    difficulty = Column(Integer)
-    correct_index = Column(Integer)
-    options = Column(String)  # можно хранить как JSON-строку
+    options = Column(String, nullable=False)   # храним варианты как строку
+    correct_index = Column(Integer, nullable=False)
+    category = Column(String, nullable=False)
+    difficulty = Column(Float, nullable=False)
 
-    game_id = Column(Integer, ForeignKey("games.id"))
-    game = relationship("Game", back_populates="questions")
-
-
-class Game(Base):
-    __tablename__ = "games"
-
-    id = Column(Integer, primary_key=True, index=True)
-    current_turn = Column(Integer, default=0)
-    state = Column(String, default="waiting")
-
-    players = relationship("Player", back_populates="game")
-    questions = relationship("Question", back_populates="game")
