@@ -28,3 +28,8 @@ def get_random_question_by_category(db: Session, category: str):
     # преобразуем строку обратно в список
     q.options = q.options.split(",")
     return q
+def create_question(db: Session, question: models.Question):
+    db.add(question)
+    db.commit()
+    db.refresh(question)
+    return question
